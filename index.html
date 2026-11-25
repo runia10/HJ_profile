@@ -1,4 +1,1061 @@
-<html>
-Hello!!!!!!!!!!
-  
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>강아지나라 - 품종 도감</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,500;0,600;1,500&family=Work+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#F6F1E4;
+    --surface:#FFFFFF;
+    --ink:#2B3A2F;
+    --ink-muted:#767F6F;
+    --border:#E3D9C4;
+    --accent:#B8862B;
+    --accent-soft:#F0E4C8;
+    --small:#7FA98C;
+    --small-soft:#E7F0E9;
+    --medium:#C98A3E;
+    --medium-soft:#F5E7D3;
+    --large:#6B7FA3;
+    --large-soft:#E6EAF2;
+  }
+
+  *{ box-sizing:border-box; }
+
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'Work Sans', sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  .mono{ font-family:'IBM Plex Mono', monospace; }
+
+  .page{
+    max-width:1080px;
+    margin:0 auto;
+    padding:52px 24px 60px;
+  }
+
+  .eyebrow{
+    display:block;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11px;
+    letter-spacing:0.16em;
+    text-transform:uppercase;
+    color:var(--accent);
+    margin-bottom:10px;
+  }
+
+  /* ---- Masthead ---- */
+  .masthead{
+    border-bottom:2px solid var(--ink);
+    padding-bottom:24px;
+    margin-bottom:28px;
+  }
+
+  .masthead h1{
+    margin:0;
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    font-size:clamp(34px, 5vw, 46px);
+    line-height:1.05;
+  }
+
+  .tagline{
+    margin:8px 0 0;
+    color:var(--ink-muted);
+    font-size:15px;
+    font-style:italic;
+    font-family:'Fraunces', serif;
+  }
+
+  /* ---- Controls layout ---- */
+  .controls{
+    display:grid;
+    grid-template-columns:220px 1fr;
+    gap:28px;
+    margin-bottom:34px;
+  }
+
+  @media (max-width: 760px){
+    .controls{ grid-template-columns:1fr; }
+  }
+
+  #searchInput{
+    width:100%;
+    padding:13px 16px;
+    border:1px solid var(--border);
+    border-radius:8px;
+    background:var(--surface);
+    font-family:'Work Sans', sans-serif;
+    font-size:15px;
+    color:var(--ink);
+    margin-bottom:18px;
+  }
+
+  #searchInput:focus{
+    outline:none;
+    border-color:var(--accent);
+  }
+
+  .filterLabel{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11px;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    color:var(--ink-muted);
+    margin-bottom:10px;
+    display:block;
+  }
+
+  /* ---- Size taxonomy tree ---- */
+  .sizePanel{
+    border:1px solid var(--border);
+    border-radius:10px;
+    padding:16px;
+    background:var(--surface);
+  }
+
+  .treeNode{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    padding:6px 10px;
+    border-radius:6px;
+    cursor:pointer;
+    font-size:13px;
+    color:var(--ink-muted);
+    width:fit-content;
+  }
+
+  .treeNode.active{
+    background:var(--ink);
+    color:var(--bg);
+  }
+
+  .treeNode:hover:not(.active){
+    background:var(--accent-soft);
+    color:var(--ink);
+  }
+
+  .treeNode.root{ margin-bottom:6px; font-weight:500; }
+
+  .treeGroup{ margin-bottom:2px; }
+
+  .expandBtn{
+    background:none;
+    border:none;
+    cursor:pointer;
+    color:var(--ink-muted);
+    font-size:10px;
+    padding:0;
+    width:12px;
+    display:inline-block;
+    transition:transform 0.15s ease;
+  }
+
+  .expandBtn.open{ transform:rotate(90deg); }
+
+  .treeChildren{
+    margin-left:20px;
+    padding-left:12px;
+    border-left:1px dashed var(--border);
+    margin-top:3px;
+    margin-bottom:6px;
+    display:flex;
+    flex-direction:column;
+    gap:3px;
+  }
+
+  .treeChildren[hidden]{ display:none; }
+
+  /* ---- Coat & personality chips ---- */
+  .filterGroup{
+    display:flex;
+    align-items:flex-start;
+    flex-wrap:wrap;
+    gap:8px;
+    margin-bottom:18px;
+  }
+
+  .filterGroup:last-child{ margin-bottom:0; }
+
+  .chip{
+    padding:6px 14px;
+    border-radius:999px;
+    border:1px solid var(--border);
+    background:var(--surface);
+    color:var(--ink-muted);
+    font-size:13px;
+    font-family:'Work Sans', sans-serif;
+    cursor:pointer;
+    transition:all 0.15s ease;
+  }
+
+  .chip:hover{ border-color:var(--accent); }
+
+  .chip.active{
+    background:var(--ink);
+    border-color:var(--ink);
+    color:var(--bg);
+  }
+
+  /* ---- Grid ---- */
+  .grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill, minmax(230px, 1fr));
+    gap:18px;
+  }
+
+  .card{
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:12px;
+    padding:20px;
+    cursor:pointer;
+    transition:transform 0.15s ease, box-shadow 0.15s ease;
+    display:flex;
+    flex-direction:column;
+    gap:14px;
+  }
+
+  .card:hover{
+    transform:translateY(-3px);
+    box-shadow:0 8px 20px rgba(43,58,47,0.08);
+    border-color:var(--accent);
+  }
+
+  .cardTop{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+  }
+
+  .plateNo{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11px;
+    color:var(--ink-muted);
+  }
+
+  .sizeTag{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:10px;
+    padding:3px 8px;
+    border-radius:999px;
+    font-weight:500;
+  }
+
+  .iconWrap{
+    width:64px; height:64px;
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    align-self:center;
+  }
+
+  .iconWrap svg{ width:34px; height:34px; }
+
+  .cardName{
+    text-align:center;
+  }
+
+  .cardName h3{
+    margin:0 0 2px;
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    font-size:18px;
+  }
+
+  .cardName span{
+    font-size:12px;
+    color:var(--ink-muted);
+  }
+
+  .cardTrait{
+    text-align:center;
+    font-size:12.5px;
+    color:var(--ink-muted);
+    padding-top:10px;
+    border-top:1px solid var(--border);
+  }
+
+  .emptyState{
+    text-align:center;
+    color:var(--ink-muted);
+    padding:60px 0;
+    font-family:'Fraunces', serif;
+    font-style:italic;
+    font-size:16px;
+  }
+
+  .resultCount{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12px;
+    color:var(--ink-muted);
+    margin-bottom:14px;
+  }
+
+  /* ---- Modal ---- */
+  .modalOverlay{
+    position:fixed;
+    inset:0;
+    background:rgba(43,58,47,0.45);
+    display:none;
+    align-items:flex-start;
+    justify-content:center;
+    padding:40px 20px;
+    overflow-y:auto;
+    z-index:50;
+  }
+
+  .modalOverlay.open{ display:flex; }
+
+  .modal{
+    background:var(--surface);
+    border-radius:14px;
+    max-width:560px;
+    width:100%;
+    padding:32px;
+    position:relative;
+  }
+
+  .modalClose{
+    position:absolute;
+    top:20px; right:20px;
+    background:none;
+    border:none;
+    font-size:20px;
+    color:var(--ink-muted);
+    cursor:pointer;
+    line-height:1;
+    padding:4px;
+  }
+
+  .modalClose:hover{ color:var(--ink); }
+
+  .modalHead{
+    display:flex;
+    gap:18px;
+    align-items:center;
+    border-bottom:1px solid var(--border);
+    padding-bottom:20px;
+    margin-bottom:20px;
+  }
+
+  .modalHead .iconWrap{ width:72px; height:72px; flex-shrink:0; }
+  .modalHead .iconWrap svg{ width:38px; height:38px; }
+
+  .modalHead h2{
+    margin:0 0 4px;
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    font-size:26px;
+  }
+
+  .modalHead .originLine{
+    font-size:13px;
+    color:var(--ink-muted);
+  }
+
+  .statRow{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:14px 20px;
+    margin-bottom:22px;
+  }
+
+  .statBlock .label{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:10.5px;
+    letter-spacing:0.06em;
+    text-transform:uppercase;
+    color:var(--ink-muted);
+    margin-bottom:4px;
+  }
+
+  .statBlock .value{
+    font-size:14.5px;
+    font-weight:500;
+  }
+
+  .gaugeSection{
+    margin-bottom:22px;
+  }
+
+  .gaugeRow{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    margin-bottom:10px;
+  }
+
+  .gaugeRow .label{
+    width:88px;
+    font-size:13px;
+    color:var(--ink-muted);
+    flex-shrink:0;
+  }
+
+  .dots{
+    display:flex;
+    gap:4px;
+  }
+
+  .dot{
+    width:9px; height:9px;
+    border-radius:50%;
+    background:var(--border);
+  }
+
+  .dot.filled{ background:var(--accent); }
+
+  .tagsSection{ margin-bottom:22px; }
+
+  .sectionLabel{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:10.5px;
+    letter-spacing:0.06em;
+    text-transform:uppercase;
+    color:var(--ink-muted);
+    margin-bottom:10px;
+  }
+
+  .temperamentTags{
+    display:flex;
+    flex-wrap:wrap;
+    gap:6px;
+  }
+
+  .temperamentTags span{
+    background:var(--accent-soft);
+    color:var(--accent);
+    font-size:12.5px;
+    padding:5px 12px;
+    border-radius:999px;
+    font-weight:500;
+  }
+
+  .noteBlock{
+    margin-bottom:16px;
+  }
+
+  .noteBlock p{
+    margin:0;
+    font-size:13.5px;
+    line-height:1.6;
+    color:var(--ink);
+  }
+
+  .prosConsRow{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:16px;
+    margin-bottom:22px;
+  }
+
+  .prosConsRow ul{
+    margin:0;
+    padding-left:18px;
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+  }
+
+  .prosConsRow li{
+    font-size:13px;
+    line-height:1.5;
+  }
+
+  .prosBlock .sectionLabel{ color:var(--small); }
+  .consBlock .sectionLabel{ color:#B5654A; }
+
+  .prosBlock li::marker{ color:var(--small); }
+  .consBlock li::marker{ color:#B5654A; }
+
+  @media (max-width: 480px){
+    .prosConsRow{ grid-template-columns:1fr; }
+  }
+
+  .videoLink{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    padding:11px 18px;
+    background:var(--ink);
+    color:var(--bg);
+    border-radius:8px;
+    text-decoration:none;
+    font-size:13.5px;
+    font-weight:500;
+  }
+
+  .videoLink:hover{ background:var(--accent); }
+
+  .videoLink svg{ width:14px; height:14px; }
+
+  @media (prefers-reduced-motion: reduce){
+    .card{ transition:none; }
+  }
+
+  @media (max-width: 480px){
+    .statRow{ grid-template-columns:1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="page">
+  <header class="masthead">
+    <span class="eyebrow">DOG BREED FIELD GUIDE</span>
+    <h1>강아지나라</h1>
+    <p class="tagline">궁금한 강아지 품종을 찾아 살펴보세요</p>
+  </header>
+
+  <div class="controls">
+    <div class="sizePanel">
+      <span class="filterLabel">크기 분류</span>
+      <div class="treeNode root active" data-level="all" data-value="">전체</div>
+
+      <div class="treeGroup">
+        <div class="treeNode" data-level="top" data-value="소형">
+          <button class="expandBtn" data-group="소형" aria-label="소형 하위 분류 펼치기">▸</button>
+          <span>소형</span>
+        </div>
+        <div class="treeChildren" data-group-children="소형" hidden>
+          <div class="treeNode" data-level="sub" data-value="초소형">초소형</div>
+          <div class="treeNode" data-level="sub" data-value="소형">소형</div>
+        </div>
+      </div>
+
+      <div class="treeGroup">
+        <div class="treeNode" data-level="top" data-value="중형" style="padding-left:22px;">중형</div>
+      </div>
+
+      <div class="treeGroup">
+        <div class="treeNode" data-level="top" data-value="대형">
+          <button class="expandBtn" data-group="대형" aria-label="대형 하위 분류 펼치기">▸</button>
+          <span>대형</span>
+        </div>
+        <div class="treeChildren" data-group-children="대형" hidden>
+          <div class="treeNode" data-level="sub" data-value="대형">대형</div>
+          <div class="treeNode" data-level="sub" data-value="초대형">초대형</div>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <input type="text" id="searchInput" placeholder="품종 이름으로 검색... (예: 말티즈)">
+
+      <span class="filterLabel">털</span>
+      <div class="filterGroup" id="coatFilter">
+        <button class="chip active" data-filter="coat" data-value="전체">전체</button>
+        <button class="chip" data-filter="coat" data-value="짧은 털">짧은 털</button>
+        <button class="chip" data-filter="coat" data-value="긴 털">긴 털</button>
+        <button class="chip" data-filter="coat" data-value="곱슬 털">곱슬 털</button>
+      </div>
+
+      <span class="filterLabel">성격</span>
+      <div class="filterGroup" id="personalityFilter">
+        <button class="chip" data-personality="애교 많음">애교 많음</button>
+        <button class="chip" data-personality="활발함">활발함</button>
+        <button class="chip" data-personality="영리함">영리함</button>
+        <button class="chip" data-personality="사교적">사교적</button>
+        <button class="chip" data-personality="온순함">온순함</button>
+        <button class="chip" data-personality="다정함">다정함</button>
+        <button class="chip" data-personality="명랑함">명랑함</button>
+        <button class="chip" data-personality="용감함">용감함</button>
+        <button class="chip" data-personality="독립적">독립적</button>
+        <button class="chip" data-personality="충성심 강함">충성심 강함</button>
+        <button class="chip" data-personality="경계심 강함">경계심 강함</button>
+        <button class="chip" data-personality="고집 있음">고집 있음</button>
+      </div>
+    </div>
+  </div>
+
+  <p class="resultCount" id="resultCount"></p>
+  <main class="grid" id="breedGrid"></main>
+  <p class="emptyState" id="emptyState" hidden>일치하는 품종이 없어요. 다른 검색어나 필터를 시도해보세요.</p>
+</div>
+
+<div class="modalOverlay" id="modalOverlay">
+  <div class="modal" id="modalContent"></div>
+</div>
+
+<script>
+  const PAW_ICON = `<svg viewBox="0 0 24 24" fill="currentColor">
+    <circle cx="6" cy="8" r="2.3"/>
+    <circle cx="12" cy="5.5" r="2.3"/>
+    <circle cx="18" cy="8" r="2.3"/>
+    <path d="M12 11c-3.5 0-7 2.4-7 5.6 0 1.9 1.6 3.1 3.6 3.1 1.3 0 2.1-.6 3.4-.6s2.1.6 3.4.6c2 0 3.6-1.2 3.6-3.1 0-3.2-3.5-5.6-7-5.6z"/>
+  </svg>`;
+
+  const SIZE_COLORS = {
+    '소형': { fg:'var(--small)', bg:'var(--small-soft)' },
+    '중형': { fg:'var(--medium)', bg:'var(--medium-soft)' },
+    '대형': { fg:'var(--large)', bg:'var(--large-soft)' }
+  };
+
+  // topSize: 소형 | 중형 | 대형 (트리 상위 분류)
+  // subSize: 초소형 | 소형 | 중형 | 대형 | 초대형 (트리 하위 분류)
+  const BREEDS = [
+    { name:'말티즈', nameEn:'Maltese', topSize:'소형', subSize:'초소형', coat:'긴 털', origin:'이탈리아·몰타',
+      weight:'2~4kg', height:'20~25cm', lifespan:'12~15년',
+      grooming:5, energy:2, shedding:1,
+      temperament:['애교 많음','활발함','예민함'],
+      health:'슬개골 탈구, 눈물 자국, 기관지 허탈에 주의가 필요해요.',
+      environment:'실내 위주 생활에 적합하고 아파트에서 키우기 좋아요.',
+      pros:['작은 체구로 실내 생활에 최적이에요','사람을 잘 따르고 애정 표현이 풍부해요'],
+      cons:['짖음이 많아 훈련이 필요해요','매일 털 관리가 필요해요'] },
+    { name:'토이 푸들', nameEn:'Toy Poodle', topSize:'소형', subSize:'초소형', coat:'곱슬 털', origin:'프랑스·독일',
+      weight:'2~4kg', height:'24~28cm', lifespan:'12~15년',
+      grooming:5, energy:4, shedding:1,
+      temperament:['영리함','활발함','사교적'],
+      health:'슬개골 탈구, 눈 질환, 진행성 망막위축증에 주의가 필요해요.',
+      environment:'실내 생활에 적합하며 지능이 높아 훈련·놀이가 함께 필요해요.',
+      pros:['똑똑해서 훈련 습득이 빠른 편이에요','털 빠짐이 적어 알레르기가 있어도 키우기 좋아요'],
+      cons:['정기적인 미용 비용이 들어요','혼자 두면 분리불안이 생기기 쉬워요'] },
+    { name:'포메라니안', nameEn:'Pomeranian', topSize:'소형', subSize:'초소형', coat:'긴 털', origin:'독일(포메라니아)',
+      weight:'1.8~3.5kg', height:'18~30cm', lifespan:'12~16년',
+      grooming:4, energy:3, shedding:4,
+      temperament:['당당함','활발함','경계심 강함'],
+      health:'기관 허탈, 슬개골 탈구, 치아 문제에 주의가 필요해요.',
+      environment:'실내 생활에 적합하고 소음 관리를 위한 훈련이 도움이 돼요.',
+      pros:['화려한 털과 귀여운 외모를 가졌어요','작은 체구로 이동이 편리해요'],
+      cons:['짖음이 많은 편이에요','더위에 약한 편이에요'] },
+    { name:'치와와', nameEn:'Chihuahua', topSize:'소형', subSize:'초소형', coat:'짧은 털', origin:'멕시코',
+      weight:'1.5~3kg', height:'15~23cm', lifespan:'14~16년',
+      grooming:2, energy:3, shedding:2,
+      temperament:['용감함','경계심 강함','충성심 강함'],
+      health:'저혈당, 슬개골 탈구, 추위에 취약해요.',
+      environment:'실내 생활에 적합하고 겨울철 보온이 필요해요.',
+      pros:['초소형이라 어디서나 키우기 쉬워요','주인에 대한 애착이 강해요'],
+      cons:['낯선 사람에게 짖거나 방어적일 수 있어요','추위에 매우 약해요'] },
+    { name:'요크셔 테리어', nameEn:'Yorkshire Terrier', topSize:'소형', subSize:'초소형', coat:'긴 털', origin:'영국(잉글랜드)',
+      weight:'2~3.5kg', height:'18~23cm', lifespan:'13~16년',
+      grooming:5, energy:3, shedding:1,
+      temperament:['용감함','고집 있음','활발함'],
+      health:'슬개골 탈구, 기관 허탈, 저혈당에 주의가 필요해요.',
+      environment:'실내 생활에 적합하고 정기적인 미용 관리가 필요해요.',
+      pros:['털 빠짐이 적은 편이에요','활발하고 용감한 성격이에요'],
+      cons:['치아 관리가 까다로운 편이에요','고집이 세 훈련에 인내가 필요해요'] },
+    { name:'시츄', nameEn:'Shih Tzu', topSize:'소형', subSize:'소형', coat:'긴 털', origin:'중국·티베트',
+      weight:'4~7kg', height:'20~28cm', lifespan:'11~15년',
+      grooming:5, energy:2, shedding:1,
+      temperament:['온순함','다정함','느긋함'],
+      health:'단두종 특성상 호흡기·눈 질환, 더위에 취약해요.',
+      environment:'실내 생활에 적합하며 여름철 온도 관리가 중요해요.',
+      pros:['성격이 온순해 아이가 있는 가정에도 적합해요','활동량이 적어 키우기 편해요'],
+      cons:['더위에 약해 여름철 관리가 필요해요','눈 질환에 취약한 편이에요'] },
+    { name:'비숑 프리제', nameEn:'Bichon Frise', topSize:'소형', subSize:'소형', coat:'곱슬 털', origin:'프랑스·벨기에',
+      weight:'3~6kg', height:'23~30cm', lifespan:'14~15년',
+      grooming:5, energy:4, shedding:1,
+      temperament:['명랑함','사교적','다정함'],
+      health:'슬개골 탈구, 피부 알레르기에 주의가 필요해요.',
+      environment:'실내 생활에 적합하고 사람과의 교감을 좋아해요.',
+      pros:['사람과 잘 어울리는 사교적 성격이에요','털 빠짐이 적은 편이에요'],
+      cons:['정기적인 미용이 꼭 필요해요','분리불안이 생기기 쉬워요'] },
+    { name:'닥스훈트', nameEn:'Dachshund', topSize:'소형', subSize:'소형', coat:'짧은 털', origin:'독일',
+      weight:'4~9kg', height:'13~23cm', lifespan:'12~16년',
+      grooming:2, energy:4, shedding:2,
+      temperament:['용감함','고집 있음','독립적'],
+      health:'긴 허리 구조상 추간판 질환(디스크)에 특히 주의가 필요해요.',
+      environment:'계단·소파 오르내림을 줄여주는 실내 환경이 좋아요.',
+      pros:['용감하고 개성이 강한 성격이에요','작은 체구로 실내 생활에 적합해요'],
+      cons:['허리 디스크 위험이 높아 관리가 필요해요','고집이 세 훈련이 어려울 수 있어요'] },
+    { name:'스피츠', nameEn:'Japanese Spitz', topSize:'소형', subSize:'소형', coat:'긴 털', origin:'일본',
+      weight:'5~10kg', height:'30~38cm', lifespan:'12~14년',
+      grooming:4, energy:3, shedding:5,
+      temperament:['명랑함','경계심 강함','애교 많음'],
+      health:'슬개골 탈구, 눈물 자국에 주의가 필요해요.',
+      environment:'실내 생활에 적합하고 짖음 훈련이 도움이 돼요.',
+      pros:['깨끗한 외모를 오래 유지할 수 있어요','명랑하고 사람을 잘 따라요'],
+      cons:['짖음이 많은 편이에요','털갈이 시기에 털 빠짐이 심해요'] },
+    { name:'비글', nameEn:'Beagle', topSize:'소형', subSize:'소형', coat:'짧은 털', origin:'영국(잉글랜드)',
+      weight:'9~11kg', height:'33~41cm', lifespan:'12~15년',
+      grooming:2, energy:5, shedding:3,
+      temperament:['호기심 많음','명랑함','사교적'],
+      health:'비만, 귀 염증, 추간판 질환에 주의가 필요해요.',
+      environment:'후각이 예민해 산책·탐색 활동이 충분히 필요해요.',
+      pros:['사람과 다른 개들에게 우호적이에요','활발하고 에너지가 넘쳐요'],
+      cons:['후각이 예민해 산책 중 통제가 어려울 수 있어요','짖음·하울링이 많은 편이에요'] },
+    { name:'페키니즈', nameEn:'Pekingese', topSize:'소형', subSize:'소형', coat:'긴 털', origin:'중국',
+      weight:'3~6kg', height:'15~23cm', lifespan:'12~14년',
+      grooming:4, energy:2, shedding:3,
+      temperament:['당당함','독립적','고집 있음'],
+      health:'단두종 특성상 호흡기·눈 질환, 더위에 취약해요.',
+      environment:'실내 생활에 적합하고 여름철 온도 관리가 중요해요.',
+      pros:['독립적이라 혼자서도 잘 지내요','도도하고 기품 있는 성격이에요'],
+      cons:['호흡기가 약해 관리가 필요해요','고집이 세 훈련이 어려울 수 있어요'] },
+    { name:'퍼그', nameEn:'Pug', topSize:'소형', subSize:'소형', coat:'짧은 털', origin:'중국',
+      weight:'6~9kg', height:'25~33cm', lifespan:'12~15년',
+      grooming:2, energy:2, shedding:4,
+      temperament:['느긋함','애교 많음','사교적'],
+      health:'단두종 특성상 호흡기 질환, 비만, 더위에 취약해요.',
+      environment:'실내 생활에 적합하고 체중 관리가 중요해요.',
+      pros:['성격이 온순하고 사람을 잘 따라요','실내 생활에 적합한 활동량이에요'],
+      cons:['호흡기 질환에 취약해요','체중 관리가 꾸준히 필요해요'] },
+    { name:'미니어처 슈나우저', nameEn:'Miniature Schnauzer', topSize:'소형', subSize:'소형', coat:'짧은 털', origin:'독일',
+      weight:'5~9kg', height:'30~36cm', lifespan:'12~14년',
+      grooming:4, energy:4, shedding:1,
+      temperament:['영리함','활발함','경계심 강함'],
+      health:'슬개골 탈구, 췌장염, 방광 결석에 주의가 필요해요.',
+      environment:'실내 생활에 적합하며 정기적인 미용 관리가 필요해요.',
+      pros:['털 빠짐이 거의 없어 알레르기가 있어도 키우기 좋아요','영리해서 훈련이 수월한 편이에요'],
+      cons:['짖음이 많은 편이에요','정기적인 미용이 필요해요'] },
+    { name:'웰시코기', nameEn:'Welsh Corgi', topSize:'중형', subSize:'중형', coat:'짧은 털', origin:'영국(웨일스)',
+      weight:'10~14kg', height:'25~30cm', lifespan:'12~13년',
+      grooming:3, energy:5, shedding:5,
+      temperament:['활발함','영리함','목양견 기질'],
+      health:'짧은 다리로 인해 허리·디스크 질환에 주의가 필요해요.',
+      environment:'활동량이 많아 충분한 산책과 놀이 공간이 필요해요.',
+      pros:['짧은 다리와 귀여운 외모가 매력적이에요','영리해서 훈련 습득이 빠른 편이에요'],
+      cons:['허리 건강 관리가 꾸준히 필요해요','털 빠짐이 심한 편이에요'] },
+    { name:'프렌치 불독', nameEn:'French Bulldog', topSize:'중형', subSize:'중형', coat:'짧은 털', origin:'프랑스',
+      weight:'8~14kg', height:'27~35cm', lifespan:'10~12년',
+      grooming:2, energy:2, shedding:3,
+      temperament:['느긋함','애교 많음','고집 있음'],
+      health:'단두종 특성상 호흡기 질환과 더위·습도에 취약해요.',
+      environment:'실내 생활에 적합하고 여름철 냉방 관리가 중요해요.',
+      pros:['짖음이 적고 비교적 조용한 편이에요','사람과의 교감을 좋아해요'],
+      cons:['호흡기 질환에 취약해요','더위에 매우 약해요'] },
+    { name:'진돗개', nameEn:'Jindo', topSize:'중형', subSize:'중형', coat:'짧은 털', origin:'대한민국(진도)',
+      weight:'15~23kg', height:'45~55cm', lifespan:'12~14년',
+      grooming:3, energy:5, shedding:5,
+      temperament:['충성심 강함','독립적','경계심 강함'],
+      health:'비교적 건강한 편이나 정기적인 관절 관리가 도움이 돼요.',
+      environment:'충분한 운동량이 필요하고 마당이 있는 환경이 이상적이에요.',
+      pros:['충성심이 매우 강해요','경비견으로서의 역할을 잘 수행해요'],
+      cons:['낯선 사람·동물에 대한 경계심이 강해요','어릴 때부터 사회화 훈련이 꼭 필요해요'] },
+    { name:'보더 콜리', nameEn:'Border Collie', topSize:'중형', subSize:'중형', coat:'긴 털', origin:'영국(스코틀랜드)',
+      weight:'14~20kg', height:'46~56cm', lifespan:'12~15년',
+      grooming:3, energy:5, shedding:4,
+      temperament:['영리함','활발함','목양견 기질'],
+      health:'고관절 이형성증, 콜리 안구 이상에 주의가 필요해요.',
+      environment:'높은 활동량이 필요해 충분한 운동·훈련 공간이 필수예요.',
+      pros:['뛰어난 지능으로 다양한 훈련을 소화해요','활동적인 라이프스타일과 잘 맞아요'],
+      cons:['운동량이 부족하면 문제 행동이 생길 수 있어요','매우 민감해 스트레스 관리가 필요해요'] },
+    { name:'시베리안 허스키', nameEn:'Siberian Husky', topSize:'중형', subSize:'중형', coat:'긴 털', origin:'러시아(시베리아)',
+      weight:'16~27kg', height:'50~60cm', lifespan:'12~14년',
+      grooming:4, energy:5, shedding:5,
+      temperament:['독립적','활발함','사교적'],
+      health:'고관절 이형성증, 눈 질환, 더위에 취약해요.',
+      environment:'넓은 공간과 많은 운동량이 필요하며 더운 환경은 피해야 해요.',
+      pros:['멋진 외모와 강인한 체력을 가졌어요','사람에게 친화적인 성격이에요'],
+      cons:['탈출 성향이 강해 울타리 관리가 필요해요','털갈이 시기에 털 빠짐이 매우 심해요'] },
+    { name:'아메리칸 코커스패니얼', nameEn:'American Cocker Spaniel', topSize:'중형', subSize:'중형', coat:'긴 털', origin:'미국',
+      weight:'10~13kg', height:'34~39cm', lifespan:'12~15년',
+      grooming:4, energy:3, shedding:3,
+      temperament:['다정함','온순함','사교적'],
+      health:'귀 염증, 눈 질환, 고관절 이형성증에 주의가 필요해요.',
+      environment:'실내 생활에 적합하고 귀·털 관리가 꾸준히 필요해요.',
+      pros:['온순하고 다정한 성격이에요','아이들과 잘 지내는 편이에요'],
+      cons:['귀 염증 관리가 자주 필요해요','털 관리에 시간이 많이 들어요'] },
+    { name:'사모예드', nameEn:'Samoyed', topSize:'중형', subSize:'중형', coat:'긴 털', origin:'러시아(시베리아)',
+      weight:'16~30kg', height:'48~60cm', lifespan:'12~14년',
+      grooming:5, energy:4, shedding:5,
+      temperament:['명랑함','다정함','사교적'],
+      health:'고관절 이형성증, 눈 질환, 더위에 취약해요.',
+      environment:'추운 기후에 강하며 충분한 운동 공간이 필요해요.',
+      pros:['항상 웃는 듯한 표정으로 사랑받는 외모예요','사람과 다른 동물에게 친화적이에요'],
+      cons:['풍성한 털 관리에 시간이 많이 들어요','더위에 약한 편이에요'] },
+    { name:'골든 리트리버', nameEn:'Golden Retriever', topSize:'대형', subSize:'대형', coat:'긴 털', origin:'영국(스코틀랜드)',
+      weight:'25~34kg', height:'51~61cm', lifespan:'10~12년',
+      grooming:4, energy:4, shedding:5,
+      temperament:['온순함','사교적','다정함'],
+      health:'고관절 이형성증, 각종 암 발병률이 비교적 높은 편이에요.',
+      environment:'마당이 있으면 좋지만 충분한 산책만으로도 실내 생활이 가능해요.',
+      pros:['온순하고 아이들과 잘 지내는 가족견이에요','훈련 습득이 빠르고 순종적이에요'],
+      cons:['털 빠짐이 매우 심한 편이에요','대형견으로 넓은 공간이 필요해요'] },
+    { name:'래브라도 리트리버', nameEn:'Labrador Retriever', topSize:'대형', subSize:'대형', coat:'짧은 털', origin:'캐나다',
+      weight:'25~36kg', height:'54~62cm', lifespan:'10~14년',
+      grooming:3, energy:5, shedding:5,
+      temperament:['온순함','활발함','사교적'],
+      health:'고관절 이형성증, 비만, 관절 질환에 주의가 필요해요.',
+      environment:'활동량이 많아 충분한 산책과 놀이가 필요해요.',
+      pros:['안정적이고 온순한 성격이에요','활동적이고 사람과 잘 어울려요'],
+      cons:['식탐이 많아 비만 관리가 필요해요','활동량이 부족하면 스트레스를 받아요'] },
+    { name:'저먼 셰퍼드', nameEn:'German Shepherd', topSize:'대형', subSize:'대형', coat:'짧은 털', origin:'독일',
+      weight:'22~40kg', height:'55~65cm', lifespan:'9~13년',
+      grooming:3, energy:5, shedding:5,
+      temperament:['영리함','충성심 강함','용감함'],
+      health:'고관절·팔꿈치 이형성증, 퇴행성 척수병증에 주의가 필요해요.',
+      environment:'충분한 훈련과 운동이 필요하며 마당이 있으면 좋아요.',
+      pros:['높은 지능과 뛰어난 훈련 능력을 가졌어요','충성심이 강해 가족을 잘 지켜요'],
+      cons:['체계적인 사회화·훈련이 필요해요','유전적 관절 질환 위험이 있어요'] },
+    { name:'달마시안', nameEn:'Dalmatian', topSize:'대형', subSize:'대형', coat:'짧은 털', origin:'크로아티아',
+      weight:'20~32kg', height:'56~61cm', lifespan:'11~13년',
+      grooming:2, energy:5, shedding:4,
+      temperament:['활발함','독립적','경계심 강함'],
+      health:'요로 결석, 청각 장애에 주의가 필요해요.',
+      environment:'활동량이 매우 많아 충분한 운동 공간이 필요해요.',
+      pros:['독특하고 화려한 무늬의 외모예요','활동적이고 지구력이 좋아요'],
+      cons:['운동량이 매우 많이 필요해요','청각 장애 유전 위험이 있어요'] },
+    { name:'알래스칸 맬러뮤트', nameEn:'Alaskan Malamute', topSize:'대형', subSize:'대형', coat:'긴 털', origin:'미국(알래스카)',
+      weight:'34~39kg', height:'58~64cm', lifespan:'10~14년',
+      grooming:5, energy:4, shedding:5,
+      temperament:['독립적','충성심 강함','고집 있음'],
+      health:'고관절 이형성증, 눈 질환, 더위에 취약해요.',
+      environment:'추운 기후에 강하며 넓은 공간과 운동량이 필요해요.',
+      pros:['강인한 체력과 늠름한 외모를 가졌어요','가족에게 충성스러운 성격이에요'],
+      cons:['풍성한 털 관리에 많은 시간이 필요해요','힘이 세 산책 시 훈련이 필요해요'] },
+    { name:'로트와일러', nameEn:'Rottweiler', topSize:'대형', subSize:'초대형', coat:'짧은 털', origin:'독일',
+      weight:'35~60kg', height:'56~69cm', lifespan:'9~10년',
+      grooming:2, energy:4, shedding:3,
+      temperament:['충성심 강함','용감함','독립적'],
+      health:'고관절 이형성증, 골육종, 관절 질환에 주의가 필요해요.',
+      environment:'체계적인 훈련과 충분한 활동 공간이 필요해요.',
+      pros:['강인한 체격과 뛰어난 보호 능력을 가졌어요','훈련 습득력이 좋은 편이에요'],
+      cons:['체계적인 사회화가 필수적이에요','다른 동물에게 공격적일 수 있어요'] },
+    { name:'그레이트 피레니즈', nameEn:'Great Pyrenees', topSize:'대형', subSize:'초대형', coat:'긴 털', origin:'프랑스·스페인',
+      weight:'39~54kg', height:'65~81cm', lifespan:'10~12년',
+      grooming:4, energy:2, shedding:5,
+      temperament:['온순함','독립적','경계심 강함'],
+      health:'고관절 이형성증, 더위에 취약해요.',
+      environment:'넓은 마당이 있는 환경이 이상적이고 추운 기후에 강해요.',
+      pros:['가족을 지키는 보호 본능이 강해요','차분하고 온순한 성격이에요'],
+      cons:['대형견으로 넓은 공간이 꼭 필요해요','짖음으로 야간 소음이 발생할 수 있어요'] },
+    { name:'세인트 버나드', nameEn:'Saint Bernard', topSize:'대형', subSize:'초대형', coat:'긴 털', origin:'스위스',
+      weight:'54~82kg', height:'65~90cm', lifespan:'8~10년',
+      grooming:3, energy:2, shedding:4,
+      temperament:['온순함','다정함','느긋함'],
+      health:'고관절 이형성증, 심장 질환, 더위에 취약해요.',
+      environment:'넓은 공간이 필요하고 더운 환경은 피해야 해요.',
+      pros:['온순하고 아이들에게 다정해요','차분한 성격으로 실내에서도 안정적이에요'],
+      cons:['체구가 커 사료·관리 비용이 많이 들어요','더위에 매우 약해요'] },
+    { name:'그레이트 데인', nameEn:'Great Dane', topSize:'대형', subSize:'초대형', coat:'짧은 털', origin:'독일',
+      weight:'45~90kg', height:'71~86cm', lifespan:'8~10년',
+      grooming:2, energy:3, shedding:3,
+      temperament:['온순함','다정함','충성심 강함'],
+      health:'위 확장·염전, 심장 질환에 주의가 필요해요.',
+      environment:'큰 체구에 맞는 넓은 실내 공간이 필요해요.',
+      pros:['온순한 성격의 "온화한 거인"이에요','아이들과도 잘 지내는 편이에요'],
+      cons:['수명이 비교적 짧은 편이에요','대형견으로 유지 비용이 많이 들어요'] }
+  ];
+
+  let state = { search:'', sizeLevel:'all', sizeValue:'', coat:'전체', personality:new Set() };
+
+  function makeIcon(topSize){
+    const c = SIZE_COLORS[topSize];
+    return `<div class="iconWrap" style="background:${c.bg}; color:${c.fg};">${PAW_ICON}</div>`;
+  }
+
+  function matchSize(b){
+    if(state.sizeLevel === 'all') return true;
+    if(state.sizeLevel === 'top') return b.topSize === state.sizeValue;
+    if(state.sizeLevel === 'sub') return b.subSize === state.sizeValue;
+    return true;
+  }
+
+  function matchPersonality(b){
+    if(state.personality.size === 0) return true;
+    return b.temperament.some(t => state.personality.has(t));
+  }
+
+  function renderGrid(){
+    const grid = document.getElementById('breedGrid');
+    const empty = document.getElementById('emptyState');
+    const resultCount = document.getElementById('resultCount');
+
+    const filtered = BREEDS.filter(b => {
+      const matchSearch = b.name.includes(state.search) || b.nameEn.toLowerCase().includes(state.search.toLowerCase());
+      const matchCoat = state.coat === '전체' || b.coat === state.coat;
+      return matchSearch && matchCoat && matchSize(b) && matchPersonality(b);
+    });
+
+    empty.hidden = filtered.length !== 0;
+    resultCount.textContent = `${filtered.length}개 품종`;
+
+    grid.innerHTML = filtered.map(b => {
+      const c = SIZE_COLORS[b.topSize];
+      return `
+        <article class="card" data-name="${b.name}">
+          <div class="cardTop">
+            <span class="plateNo mono">No. ${String(BREEDS.indexOf(b)+1).padStart(2,'0')}</span>
+            <span class="sizeTag" style="background:${c.bg}; color:${c.fg};">${b.subSize}</span>
+          </div>
+          ${makeIcon(b.topSize)}
+          <div class="cardName">
+            <h3>${b.name}</h3>
+            <span>${b.nameEn}</span>
+          </div>
+          <div class="cardTrait">${b.temperament[0]} · ${b.coat}</div>
+        </article>
+      `;
+    }).join('');
+
+    document.querySelectorAll('.card').forEach(card => {
+      card.addEventListener('click', () => openModal(card.dataset.name));
+    });
+  }
+
+  function dots(value){
+    return Array.from({length:5}, (_, i) =>
+      `<span class="dot ${i < value ? 'filled' : ''}"></span>`
+    ).join('');
+  }
+
+  function openModal(name){
+    const b = BREEDS.find(x => x.name === name);
+    const modal = document.getElementById('modalContent');
+
+    modal.innerHTML = `
+      <button class="modalClose" id="modalCloseBtn" aria-label="닫기">✕</button>
+      <div class="modalHead">
+        ${makeIcon(b.topSize)}
+        <div>
+          <h2>${b.name}</h2>
+          <div class="originLine">${b.nameEn} · 원산지 ${b.origin}</div>
+        </div>
+      </div>
+
+      <div class="statRow">
+        <div class="statBlock">
+          <div class="label">크기 분류</div>
+          <div class="value">${b.topSize} (${b.subSize})</div>
+        </div>
+        <div class="statBlock">
+          <div class="label">평균 수명</div>
+          <div class="value">${b.lifespan}</div>
+        </div>
+        <div class="statBlock">
+          <div class="label">몸무게</div>
+          <div class="value">${b.weight}</div>
+        </div>
+        <div class="statBlock">
+          <div class="label">어깨 높이</div>
+          <div class="value">${b.height}</div>
+        </div>
+      </div>
+
+      <div class="gaugeSection">
+        <div class="gaugeRow">
+          <span class="label">털 관리</span>
+          <div class="dots">${dots(b.grooming)}</div>
+        </div>
+        <div class="gaugeRow">
+          <span class="label">활동량</span>
+          <div class="dots">${dots(b.energy)}</div>
+        </div>
+        <div class="gaugeRow">
+          <span class="label">털 빠짐</span>
+          <div class="dots">${dots(b.shedding)}</div>
+        </div>
+      </div>
+
+      <div class="tagsSection">
+        <div class="sectionLabel">성격 특성</div>
+        <div class="temperamentTags">
+          ${b.temperament.map(t => `<span>${t}</span>`).join('')}
+        </div>
+      </div>
+
+      <div class="prosConsRow">
+        <div class="prosBlock">
+          <div class="sectionLabel">장점</div>
+          <ul>${b.pros.map(p => `<li>${p}</li>`).join('')}</ul>
+        </div>
+        <div class="consBlock">
+          <div class="sectionLabel">단점</div>
+          <ul>${b.cons.map(c => `<li>${c}</li>`).join('')}</ul>
+        </div>
+      </div>
+
+      <div class="noteBlock">
+        <div class="sectionLabel">건강 주의사항</div>
+        <p>${b.health}</p>
+      </div>
+
+      <div class="noteBlock">
+        <div class="sectionLabel">적합한 생활환경</div>
+        <p>${b.environment}</p>
+      </div>
+
+      <div class="noteBlock">
+        <div class="sectionLabel">훈련 영상</div>
+        <a class="videoLink" href="https://www.youtube.com/results?search_query=${encodeURIComponent(b.name + ' 강아지 훈련 방법')}" target="_blank" rel="noopener noreferrer">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+          ${b.name} 훈련 영상 보러가기
+        </a>
+      </div>
+    `;
+
+    document.getElementById('modalCloseBtn').addEventListener('click', closeModal);
+    document.getElementById('modalOverlay').classList.add('open');
+  }
+
+  function closeModal(){
+    document.getElementById('modalOverlay').classList.remove('open');
+  }
+
+  document.getElementById('modalOverlay').addEventListener('click', (e) => {
+    if (e.target.id === 'modalOverlay') closeModal();
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeModal();
+  });
+
+  document.getElementById('searchInput').addEventListener('input', (e) => {
+    state.search = e.target.value.trim();
+    renderGrid();
+  });
+
+  // 크기 분류 트리
+  document.querySelectorAll('.expandBtn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const group = btn.dataset.group;
+      const childrenEl = document.querySelector(`[data-group-children="${group}"]`);
+      const isOpen = !childrenEl.hidden;
+      childrenEl.hidden = isOpen;
+      btn.classList.toggle('open', !isOpen);
+    });
+  });
+
+  document.querySelectorAll('.treeNode').forEach(node => {
+    node.addEventListener('click', () => {
+      state.sizeLevel = node.dataset.level;
+      state.sizeValue = node.dataset.value;
+      document.querySelectorAll('.treeNode').forEach(n => n.classList.remove('active'));
+      node.classList.add('active');
+      renderGrid();
+    });
+  });
+
+  // 털 필터 (단일 선택)
+  document.querySelectorAll('#coatFilter .chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      state.coat = chip.dataset.value;
+      document.querySelectorAll('#coatFilter .chip').forEach(c => c.classList.remove('active'));
+      chip.classList.add('active');
+      renderGrid();
+    });
+  });
+
+  // 성격 필터 (다중 선택)
+  document.querySelectorAll('#personalityFilter .chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      const value = chip.dataset.personality;
+      if (state.personality.has(value)) {
+        state.personality.delete(value);
+        chip.classList.remove('active');
+      } else {
+        state.personality.add(value);
+        chip.classList.add('active');
+      }
+      renderGrid();
+    });
+  });
+
+  renderGrid();
+</script>
+
+</body>
 </html>
